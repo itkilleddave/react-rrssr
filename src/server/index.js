@@ -15,7 +15,7 @@ app.use(express.static('public'))
 
 app.get('*', (req, res, next) => {
 
-	const activeRoute = routes.find((routes) => matchPath(req.url, routes)) || {}
+	const activeRoute = routes.find((route) => matchPath(req.url, route)) || {}
 
 	const promise = activeRoute.fetchInitialData
 		? activeRoute.fetchInitialData(req.path)
@@ -23,9 +23,11 @@ app.get('*', (req, res, next) => {
 
 	promise.then((data) => {
 
+		const context = {data}
+
 		const markup = renderToString(
-			<StaticRouter location={req.url} context={{}}>
-				<App data={data} />
+			<StaticRouter location={req.url} context={context}>
+				<App />
 			</StaticRouter>
 		)
 
